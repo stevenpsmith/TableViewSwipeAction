@@ -52,14 +52,18 @@ class ViewController: UIViewController {
             if email.toggleFlaggedFlag() {
                 self.data[indexPath.row] = email
                 self.tableView.reloadRows(at: [indexPath], with: .none)
+                completionHandler(true)
+            } else {
+                completionHandler(false)
             }
-            completionHandler(true)
         }
         action.image = UIImage(named: "flag")
         action.backgroundColor = email.isFlagged ? UIColor.gray : UIColor.orange
         return action
     }
 }
+
+//MARK: Delegate
 
 extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
@@ -69,8 +73,8 @@ extension ViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = self.contextualDeleteAction(forRowAtIndexPath: indexPath)
-        let archiveAction = self.contextualToggleFlagAction(forRowAtIndexPath: indexPath)
-        let swipeConfig = UISwipeActionsConfiguration(actions: [deleteAction, archiveAction])
+        let flagAction = self.contextualToggleFlagAction(forRowAtIndexPath: indexPath)
+        let swipeConfig = UISwipeActionsConfiguration(actions: [deleteAction, flagAction])
         return swipeConfig
     }
 
@@ -78,6 +82,8 @@ extension ViewController: UITableViewDelegate {
         return .none
     }
 }
+
+//MARK: DataSource
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -95,7 +101,7 @@ extension ViewController: UITableViewDataSource {
         if email.isNew {
             cell.textLabel?.font = UIFont.boldSystemFont(ofSize: 20.0)
         } else {
-            cell.textLabel?.font = UIFont.systemFont(ofSize: 16.0)
+            cell.textLabel?.font = UIFont.systemFont(ofSize: 17.0)
         }
 
         if email.isFlagged {
